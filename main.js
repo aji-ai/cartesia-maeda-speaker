@@ -7,7 +7,7 @@ let webSocket = null;
 let recognition = null;
 let isRecording = false;
 let avatarInterval = null;
-const avatarImages = ['maedaclosed.jpg', 'maedaopenlittle.jpg', 'maedaopen.jpg'];
+const avatarImages = ['/maedaclosed.jpg', '/maedaopenlittle.jpg', '/maedaopen.jpg'];
 const avatarElement = document.querySelector('.avatar');
 
 let conversationHistory = [];
@@ -134,12 +134,9 @@ function initCartesia(apiKey) {
   try {
     console.log('Initializing Cartesia with API key...');
     client = new CartesiaClient({ apiKey });
-    player = new WebPlayer({
-      bufferDuration: 0.1, // 100ms buffer
-      sampleRate: 44100,
-      channels: 1
-    });
-    console.log('Cartesia initialized successfully');
+    
+    // Don't initialize player yet, wait for user interaction
+    console.log('Cartesia client initialized successfully');
   } catch (error) {
     console.error('Error initializing Cartesia:', error);
     alert('Failed to initialize Cartesia: ' + error.message);
@@ -174,14 +171,23 @@ async function streamSpeech(text) {
   }
   
   try {
+    // Initialize player on first use if not already initialized
+    if (!player) {
+      player = new WebPlayer({
+        bufferDuration: 0.1,
+        sampleRate: 48000, // Changed to 48kHz for iOS compatibility
+        channels: 1
+      });
+    }
+    
     console.log('Initializing WebSocket connection...');
-    startAvatarAnimation(); // Start avatar animation
+    startAvatarAnimation();
     
     // Initialize WebSocket
     webSocket = client.tts.websocket({
       container: "raw",
       encoding: "pcm_f32le",
-      sampleRate: 44100,
+      sampleRate: 48000,  // Match the player's sample rate
     });
     
     console.log('Connecting to WebSocket...');
@@ -437,13 +443,13 @@ function startAvatarAnimation() {
   
   avatarInterval = setInterval(() => {
     // Randomly select one of the open mouth images
-    const randomImage = Math.random() < 0.5 ? 'maedaopenlittle.jpg' : 'maedaopen.jpg';
+    const randomImage = Math.random() < 0.5 ? '/maedaopenlittle.jpg' : '/maedaopen.jpg';
     avatarElement.src = randomImage;
     
     // Small chance to show closed mouth briefly
     if (Math.random() < 0.2) {
       setTimeout(() => {
-        avatarElement.src = 'maedaclosed.jpg';
+        avatarElement.src = '/maedaclosed.jpg';
       }, 50);
     }
   }, 150);
@@ -454,7 +460,7 @@ function stopAvatarAnimation() {
     clearInterval(avatarInterval);
     avatarInterval = null;
   }
-  avatarElement.src = 'maedaclosed.jpg';
+  avatarElement.src = '/maedaclosed.jpg';
 }
 
 // Modify the existing play function to include avatar animation
