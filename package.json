@@ -1,0 +1,29 @@
+{
+  "name": "cartesia-maeda-speaker",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aji-ai/cartesia-maeda-speaker.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/aji-ai/cartesia-maeda-speaker/issues"
+  },
+  "homepage": "https://github.com/aji-ai/cartesia-maeda-speaker#readme",
+  "devDependencies": {
+    "vite": "^4.5.2"
+  },
+  "dependencies": {
+    "@cartesia/cartesia-js": "latest",
+    "openai": "^4.91.1"
+  }
+}
